@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Script Runner</title>
+</head>
+<body>
+    <h1>Script Runner</h1>
+    <div id="buttons"></div>
+
+    <script>
+        // Function to fetch script files from the Projects folder
+        function fetchScripts() {
+            fetch('Projects/')
+                .then(response => response.text())
+                .then(text => {
+                    // Extract script names from the response
+                    const scriptNames = text.split('\n').filter(name => name.trim() !== '');
+                    const buttonsContainer = document.getElementById('buttons');
+
+                    // Create buttons for each script
+                    scriptNames.forEach(name => {
+                        const button = document.createElement('button');
+                        button.textContent = name;
+                        button.addEventListener('click', () => {
+                            runScript(name);
+                        });
+                        buttonsContainer.appendChild(button);
+                    });
+                });
+        }
+
+        // Function to run a script by its name
+        function runScript(scriptName) {
+            fetch(`Projects/${scriptName}`)
+                .then(response => response.text())
+                .then(scriptContent => {
+                    // Execute the script content as JavaScript
+                    eval(scriptContent);
+                })
+                .catch(error => {
+                    console.error('Error executing script:', error);
+                });
+        }
+
+        // Fetch and display the script buttons when the page loads
+        window.onload = fetchScripts;
+    </script>
+</body>
+</html>
